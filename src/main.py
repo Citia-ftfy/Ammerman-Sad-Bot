@@ -4,6 +4,7 @@
 from multiprocessing import Process
 from runner import draw as draw
 
+
 if __name__ == "__main__":
     p1 = Process(target=draw, args=("jlel",))
     #p2 = Process(target=draw, args=("jlel2",))
