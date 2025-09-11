@@ -3,31 +3,76 @@ import sounddevice as sd
 from scipy.io.wavfile import write
 import os
 import tempfile
+import keyboard  # pip install keyboard
+import numpy as np
+import time
 
 # Load the Whisper model
-model = whisper.load_model("turbo", device="cuda")
+model = whisper.load_model("tiny.en", device="cuda")
 
 def record_and_transcribe():
-    duration = 10  # seconds
     samplerate = 16000  # Whisper prefers 16kHz audio
 
+    print("Hold SPACE to record and transcribe...")
     while True:
+        keyboard.wait('space')  # Wait for spacebar press
         print("Recording...")
-        #print(sd.query_devices()) # List available audio devices
-        audio = sd.rec(int(duration * samplerate), samplerate=samplerate, channels=1, dtype='int16')
-        sd.wait()  # Wait until recording is finished
+        start_time = time.time()
+        recording = []
 
-        # Save the recording to a temporary file
+        # Start recording
+        stream = sd.InputStream(samplerate=samplerate, channels=1, dtype='int16')
+        stream.start()
+        while keyboard.is_pressed('space'):
+            data, _ = stream.read(1024)
+            recording.append(data)
+        stream.stop()
+        duration = time.time() - start_time
+
+        # Concatenate all chunks
+        audio = np.concatenate(recording, axis=0)
+
         with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as temp_audio_file:
             write(temp_audio_file.name, samplerate, audio)
             temp_audio_path = temp_audio_file.name
 
-        print("Transcribing...")
+        print(f"Transcribing {duration:.2f} seconds of audio...")
         result = model.transcribe(temp_audio_path)
         print("Transcription:", result["text"])
 
-        # Delete the temporary audio file
-       # os.remove(temp_audio_path)
+        os.remove(temp_audio_path)
+
+def record_and_transcribe_once():
+    samplerate = 16000  # Whisper prefers 16kHz audio
+
+    print("Hold SPACE to record and transcribe...")
+    keyboard.wait('space')  # Wait for spacebar press
+    print("Recording...")
+    start_time = time.time()
+    recording = []
+
+    # Start recording
+    stream = sd.InputStream(samplerate=samplerate, channels=1, dtype='int16')
+    stream.start()
+    while keyboard.is_pressed('space'):
+        data, _ = stream.read(1024)
+        recording.append(data)
+    stream.stop()
+    duration = time.time() - start_time
+
+    # Concatenate all chunks
+    audio = np.concatenate(recording, axis=0)
+
+    with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as temp_audio_file:
+        write(temp_audio_file.name, samplerate, audio)
+        temp_audio_path = temp_audio_file.name
+
+    print(f"Transcribing {duration:.2f} seconds of audio...")
+    result = model.transcribe(temp_audio_path)
+    print("Transcription:", result["text"])
+
+    os.remove(temp_audio_path)
+    return result["text"]
 
 # Start the recording and transcription loop
-record_and_transcribe()
+#record_and_transcribe_once()
