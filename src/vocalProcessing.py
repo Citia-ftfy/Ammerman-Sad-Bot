@@ -9,7 +9,9 @@ import time
 import torch
 
 # Load the Whisper model
-model = whisper.load_model("tiny.en", device="cuda")
+device = "cuda" if torch.cuda.is_available() else "cpu"
+model = whisper.load_model("tiny.en", device=device)
+print(f"Using device: {device}")
 
 def record_and_transcribe():
     samplerate = 16000  # Whisper prefers 16kHz audio

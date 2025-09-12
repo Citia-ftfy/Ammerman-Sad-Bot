@@ -3,16 +3,13 @@ from TTS.api import TTS
 
 # Get device
 device = "cuda" if torch.cuda.is_available() else "cpu"
+print(f"Using device: {device}")
 
 # List available 🐸TTS models
 print(TTS().list_models())
 
-# Init TTS
-tts = TTS("tts_models/multilingual/multi-dataset/xtts_v2").to(device)
-
+OUTPUT_PATH = "output.wav"
+# Init TTS with the target model name
+tts = TTS(model_name="tts_models/en/ek1/tacotron2", progress_bar=False)
 # Run TTS
-# ❗ Since this model is multi-lingual voice cloning model, we must set the target speaker_wav and language
-# Text to speech list of amplitude values as output
-wav = tts.tts(text="Hello world!", speaker_wav="my/cloning/audio.wav", language="en")
-# Text to speech to a file
-tts.tts_to_file(text="Hello world!", speaker_wav="my/cloning/audio.wav", language="en", file_path="output.wav")
+tts.tts_to_file(text="Hello, how are you, its nice, to meet you", file_path=OUTPUT_PATH)
