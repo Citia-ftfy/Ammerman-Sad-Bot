@@ -6,6 +6,7 @@ import tempfile
 import keyboard  # pip install keyboard
 import numpy as np
 import time
+import torch
 
 # Load the Whisper model
 model = whisper.load_model("tiny.en", device="cuda")

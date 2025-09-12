@@ -3,6 +3,7 @@ import os
 from dotenv import load_dotenv
 from vocalProcessing import record_and_transcribe_once as rato
 import pyttsx3
+import time
 
 engine = pyttsx3.init()
 for voice in engine.getProperty('voices'):
@@ -38,6 +39,11 @@ def get_response_from_openai(prompt):
 while True:
     response_text = get_response_from_openai(rato())
     print(response_text)
-    engine.stop()  # Ensure previous speech is stopped
+    engine = pyttsx3.init()
+    for voice in engine.getProperty('voices'):
+        if "ZIRA" in voice.name.upper():
+            engine.setProperty('voice', voice.id)
+            break
     engine.say(response_text)
     engine.runAndWait()
+    time.sleep(0.1)
