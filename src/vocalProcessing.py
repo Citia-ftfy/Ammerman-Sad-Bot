@@ -7,11 +7,13 @@ import keyboard  # pip install keyboard
 import numpy as np
 import time
 import torch
+import pyttsx3
 
 # Load the Whisper model
-device = "cuda" if torch.cuda.is_available() else "cpu"
-model = whisper.load_model("tiny.en", device=device)
-print(f"Using device: {device}")
+#torch.load(weights_only=True)
+device1 = "cuda" if torch.cuda.is_available() else "cpu"
+model = whisper.load_model("tiny.en", device=device1)
+print(f"Using device: {device1}")
 
 def record_and_transcribe():
     samplerate = 16000  # Whisper prefers 16kHz audio
@@ -77,5 +79,6 @@ def record_and_transcribe_once():
     os.remove(temp_audio_path)
     return result["text"]
 
+print("Vocal processing module loaded.")
 # Start the recording and transcription loop
 #record_and_transcribe_once()
