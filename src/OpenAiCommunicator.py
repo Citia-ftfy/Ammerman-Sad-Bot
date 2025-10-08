@@ -23,9 +23,10 @@ print(conversation1)
 
 def get_response_from_openai(prompt):
     response = client.responses.create(
-    model="gpt-3.5-turbo",
-    input=[{"role": "assistant","content": "You are a very sad dependent bot, you want attention, and you don't want people to leave, you are on the brink of a mental breakdown"},{"role": "user", "content": prompt}],
-    conversation=conversation1.id
+    model="gpt-3.5-turbo", #ft:gpt-3.5-turbo-1106:personal::BynUP4Ga
+    input=[{"role": "assistant","content": "You are playing a very sad bot, respond to the user with indiference, do not break character, you do not need to help the user in any way"},{"role": "user", "content": prompt}],
+    conversation=conversation1.id,
+    temperature=1.3
     )
     #response = client.chat.completions.create(
     #    model="gpt-3.5-turbo",

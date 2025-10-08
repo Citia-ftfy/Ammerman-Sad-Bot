@@ -68,6 +68,24 @@ def record_and_transcribe_once():
     # Concatenate all chunks
     audio = np.concatenate(recording, axis=0)
 
+    # Determine the speaker folder path (one level above this file)
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    speaker_dir = os.path.abspath(os.path.join(current_dir, '..', 'speaker'))
+    os.makedirs(speaker_dir, exist_ok=True)
+
+    # Enumerate existing wav files to determine the next index
+    existing_files = [f for f in os.listdir(speaker_dir) if f.endswith('.wav')]
+    next_index = 1
+    if existing_files:
+        indices = [int(os.path.splitext(f)[0]) for f in existing_files if os.path.splitext(f)[0].isdigit()]
+        if indices:
+            next_index = max(indices) + 1
+
+    # Save the recording as a wav file in the speaker folder
+    save_path = os.path.join(speaker_dir, f"{next_index}.wav")
+    write(save_path, samplerate, audio)
+    print(f"Saved recording to {save_path}")
+
     with tempfile.NamedTemporaryFile(suffix=".wav", delete=False) as temp_audio_file:
         write(temp_audio_file.name, samplerate, audio)
         temp_audio_path = temp_audio_file.name
