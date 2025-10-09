@@ -24,8 +24,8 @@ def get_speaker_wavs():
         if f.lower().endswith(".wav")
     ]
     # Print in the requested format
-    speaker_wavs_str = "[{}]".format(", ".join(f'"{w}"' for w in speaker_wavs))
-    #print(speaker_wavs_str)
+    #speaker_wavs_str = "[{}]".format(", ".join(f'"{w}"' for w in speaker_wavs))
+    #print(speaker_wavs_str) 
     return speaker_wavs
 
 

@@ -28,13 +28,6 @@ def get_response_from_openai(prompt):
     conversation=conversation1.id,
     temperature=1.3
     )
-    #response = client.chat.completions.create(
-    #    model="gpt-3.5-turbo",
-    #    messages=[
-    #        {"role": "system", "content": "You are a helpful assistant."},
-    #        {"role": "user", "content": prompt}
-    #    ]
-    #)
     return response.output[0].content[0].text
 
 
