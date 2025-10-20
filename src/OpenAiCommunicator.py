@@ -28,13 +28,30 @@ def getEmotion(text):
     emotion_pipeline = reto2("tyeest")
     print("Pipeline loaded")
     emotions = emotion_pipeline(text)[0]
+    print(emotions)
+    #print(emotions.get('label'=='sadness'))
     # emotions is a list of dicts like [{'label': 'sadness', 'score': 0.83}, ...]
     dominant_emotion = max(emotions, key=lambda x: x['score'])
-    ai_state['loneliness'] = dominant_emotion['score'] if dominant_emotion['label'] == 'sadness' else 0.5
-    ai_state['joy'] = dominant_emotion['score'] if dominant_emotion['label'] == 'joy' else 0.2
-    ai_state['fear'] = dominant_emotion['score'] if dominant_emotion['label'] == 'fear' else 0.1
+    
+
+    for item in emotions:
+        if item['label'] == 'sadness':
+            ai_state['loneliness'] = item['score']
+        elif item['label'] == 'joy':
+            ai_state['joy'] = item['score']
+        elif item['label'] == 'fear':
+            ai_state['fear'] = item['score']
+        elif item['label'] == 'anger':
+            ai_state['anger'] = item['score']
+
+
+    # ai_state['loneliness'] = next((item['score'] for item in emotions if item['label'] == 'sadness'), 0.5)
+    # ai_state['joy'] = next((item['score'] for item in emotions if item['label'] == 'joy'), 0.2)
+    # ai_state['fear'] = next((item['score'] for item in emotions if item['label'] == 'fear'), 0.1)
+    # ai_state['anger'] = next((item['score'] for item in emotions if item['label'] == 'anger'), 0.0)
+
     #p5a.emotion_updater(ai_state)
-    print(dominant_emotion)
+    #print(dominant_emotion)
     return dominant_emotion
 
 
