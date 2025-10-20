@@ -4,11 +4,15 @@ from dotenv import load_dotenv
 from vocalProcessing import record_and_transcribe_once as rato
 #from vocalSpeach import speak_text as ste
 from testing import returnEmoition2 as reto2
+from pythonosc import udp_client
 import time
 import threading
-import p5visualAgent
 
 ai_state = {"loneliness": 0.5, "joy": 0.2, "fear": 0., "anger": 0.0}
+
+ip = "127.0.0.1"
+port = 7000
+
 
 load_dotenv()  # Load environment variables from .env file
 openai_key = os.getenv("OPENAI_KEY")
@@ -34,19 +38,28 @@ def getEmotion(text):
     return dominant_emotion
 
 
+def oscsend():
+    client = udp_client.SimpleUDPClient(ip, port)
+    while True:
+        client.send_message("/loneliness", ai_state["loneliness"])
+        client.send_message("/joy", ai_state["joy"])
+        client.send_message("/fear", ai_state["fear"])
+        client.send_message("/anger", ai_state["anger"])
+        time.sleep(0.1)
 
-def visualize():
-    print("Starting visualization thread in main")
-    global ai_state
-    #pta5 = p5a.startprocess(ai_state)
-    t = threading.Thread(target=p5visualAgent.startprocess, args=(ai_state), daemon=True)
-    t.start()
-    return t
+
+# def visualize():
+#     print("Starting visualization thread in main")
+#     global ai_state
+#     #pta5 = p5a.startprocess(ai_state)
+#     t = threading.Thread(target=p5visualAgent.startprocess, args=(ai_state), daemon=True)
+#     t.start()
+#     return t
        
 #visualize()
 # Start visualization on separate thread
 
-#threading.Thread(target=visualize, args=(), daemon=True).start()
+
 
 
 def get_response_from_openai(prompt):
@@ -62,7 +75,6 @@ def get_response_from_openai(prompt):
 def main_thread_loop(function):
     while True:
         text = rato()
-        #print(reto(text))
         getEmotion(text)
         function(ai_state)
         print("do i get here2?")
@@ -77,18 +89,18 @@ def main_loop():
         text = rato()
         #print(reto(text))
         getEmotion(text)
-        p5visualAgent.emotionUpdater(ai_state)
-        print("do i get here2?")
-        response_text = get_response_from_openai(text)
-        #response_text = get_response_from_openai(rato())
-        print(response_text)
+        #p5visualAgent.emotionUpdater(ai_state)
+        
+        #response_text = get_response_from_openai(text)
+        
+        #print(response_text)
         #ste(response_text)
         time.sleep(0.1)
 
 
 if __name__ == "__main__":
-    vis_thread = visualize()
-
+    #vis_thread = visualize()
+    threading.Thread(target=oscsend, args=(), daemon=True).start()
 
     main_loop()
     
