@@ -1,7 +1,8 @@
 from openai import OpenAI
 import os
 from dotenv import load_dotenv
-from vocalProcessing import record_and_transcribe_once as rato
+from vocalProcessing import start_osc_server, record_and_transcribe_once as rato
+#from vocalProcessing import 
 #from vocalSpeach import speak_text as ste
 from testing import returnEmoition2 as reto2
 from pythonosc import udp_client
@@ -13,6 +14,9 @@ import argparse
 parser = argparse.ArgumentParser("Ammerman Sad Bot OpenAI Communicator")
 parser.add_argument("--OSC", type=bool, default=False, help="Enable OSC communication", dest="osc_enabled")
 args = parser.parse_args()
+
+if args.osc_enabled:
+    server = start_osc_server(host="127.0.0.1", port=10001)
 
 ai_state = {"loneliness": 0.5, "joy": 0.2, "fear": 0., "anger": 0.0}
 
@@ -113,7 +117,7 @@ def main_thread_loop(function):
 
 def main_loop():
     while True:
-        text = rato()
+        text = rato(osc=args.osc_enabled)
         #print(reto(text))
         getEmotion(text)
         #p5visualAgent.emotionUpdater(ai_state)
