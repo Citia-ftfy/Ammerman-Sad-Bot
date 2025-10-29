@@ -7,6 +7,12 @@ from testing import returnEmoition2 as reto2
 from pythonosc import udp_client
 import time
 import threading
+import argparse
+
+
+parser = argparse.ArgumentParser("Ammerman Sad Bot OpenAI Communicator")
+parser.add_argument("--OSC", type=bool, default=False, help="Enable OSC communication", dest="osc_enabled")
+args = parser.parse_args()
 
 ai_state = {"loneliness": 0.5, "joy": 0.2, "fear": 0., "anger": 0.0}
 
@@ -54,6 +60,10 @@ def getEmotion(text):
     #print(dominant_emotion)
     return dominant_emotion
 
+def oscresicve():
+    #ss
+    pass
+    
 
 def oscsend():
     client = udp_client.SimpleUDPClient(ip, port)

@@ -47,11 +47,14 @@ def record_and_transcribe():
 
         os.remove(temp_audio_path)
 
-def record_and_transcribe_once():
+def record_and_transcribe_once(osc):
     samplerate = 16000  # Whisper prefers 16kHz audio
 
     print("Hold SPACE to record and transcribe...")
-    keyboard.wait('space')  # Wait for spacebar press
+    if osc == False:
+        keyboard.wait('space')  # Wait for spacebar press
+    elif osc == True:
+        time.sleep(2)
     print("Recording...")
     start_time = time.time()
     recording = []
