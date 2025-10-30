@@ -35,7 +35,8 @@ def speak_text(text):
       # Path to the folder containing speaker WAV files
     speaker_wavs = get_speaker_wavs()
 
-    tts.tts_to_file(text=text, file_path=OUTPUT_PATH, language="en",speaker_wav=speaker_wavs, emotion="sad", speed=1.0)
+    # THIS IS THE OLD METHOD ITS GETTING SLOW#tts.tts_to_file(text=text, file_path=OUTPUT_PATH, language="en",speaker_wav=speaker_wavs, emotion="sad", speed=1.0)
+    tts.tts_to_file(text=text, file_path=OUTPUT_PATH, language="en",speaker="Ana Florence", emotion="sad", speed=1.0)
     # Here you can add code to play the OUTPUT_PATH audio file if needed
     # For example, using simpleaudio or pydub libraries
     wave_obj = sa.WaveObject.from_wave_file(OUTPUT_PATH)

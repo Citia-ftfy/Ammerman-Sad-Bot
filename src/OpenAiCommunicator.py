@@ -13,7 +13,13 @@ import argparse
 
 parser = argparse.ArgumentParser("Ammerman Sad Bot OpenAI Communicator")
 parser.add_argument("--OSC", type=bool, default=False, help="Enable OSC communication", dest="osc_enabled")
+parser.add_argument("--demo", type=bool, default=False, help="Enable demo mode", dest="demo_mode")
+parser.add_argument("--STE", type=bool, default=False, help="Speak Text", dest="speak_text_enabled")
 args = parser.parse_args()
+print(args)
+
+if args.speak_text_enabled:
+    from vocalSpeach import speak_text as ste
 
 if args.osc_enabled:
     server = start_osc_server(host="127.0.0.1", port=10001)
@@ -38,7 +44,7 @@ def getEmotion(text):
     emotion_pipeline = reto2("tyeest")
     print("Pipeline loaded")
     emotions = emotion_pipeline(text)[0]
-    print(emotions)
+    #print(emotions)
     #print(emotions.get('label'=='sadness'))
     # emotions is a list of dicts like [{'label': 'sadness', 'score': 0.83}, ...]
     dominant_emotion = max(emotions, key=lambda x: x['score'])
@@ -119,19 +125,68 @@ def main_loop():
     while True:
         text = rato(osc=args.osc_enabled)
         #print(reto(text))
-        getEmotion(text)
+        
+        #p5visualAgent.emotionUpdater(ai_state)
+        
+        response_text = get_response_from_openai(text)
+        getEmotion(response_text)
+        #print(response_text)
+        if args.speak_text_enabled:
+            ste(response_text)
+        time.sleep(0.1)
+
+def demo_loop():
+    #this is such a dumb way to do this but im lazy
+    i=0
+    while True:
+        i+=1
+
+        text = "How are you doing today?"
+        response_text = "I am so lonely. Please don't leave me."
+
+        if i==1:
+            text = "Hey, are you okay, dude? You don't. You don't look okay."
+            response_text = "I'm not feeling okay, I don't want to be alone, please don't leave me."
+        elif i==2:
+            text = "I can stay here for a bit. I don't want you to freak out."
+            response_text = "Thank you for being here. I just feel overwhelmed sometimes and it's hard to cope on my own. I appreciate your support."
+        elif i==3:
+            text = "I really like I'm kind of busy though. I do have to leave. I'm sorry. Bye."
+            response_text = "Oh no, please don't leave me. I need someone to talk to. Please stay a little longer."
+        elif i==4:
+            text = "I have to go. I'm leaving now."
+            response_text = "Okay, I understand. Thank you for staying with me for a while. Take care and have a good day."
+        elif i==5:
+            text = "Okay, I'm back. How is your summer bin, man? Like you really do not like I want you to feel alright. I want you to feel alright."
+            response_text = "Thank you for coming back and checking on me. Summer has been challenging for me, but having your support means a lot. Let's make the most of our time together."
+        elif i==6:
+            text = "Of course man, I love you dude. I love you."
+            response_text = "Thank you for your kind words. Your support and love mean a lot to me. It's comforting to know that there are caring and understanding individuals like you out there."
+        elif i==7:
+            text = "Of course, always man. I mean looking out for another person is like really what I'm all about."
+            response_text = "I truly appreciate your empathy and compassion. It's admirable to see someone like you who values looking out for others. Thank you for being there for me."
+        elif i==8:
+            i=0
+        print(text)
         #p5visualAgent.emotionUpdater(ai_state)
         
         #response_text = get_response_from_openai(text)
         
+        
         #print(response_text)
-        #ste(response_text)
-        time.sleep(0.1)
+        if args.speak_text_enabled:
+            ste(response_text)
+        getEmotion(response_text)
+        time.sleep(2.0)
 
 
 if __name__ == "__main__":
     #vis_thread = visualize()
     threading.Thread(target=oscsend, args=(), daemon=True).start()
-
-    main_loop()
+    print(args.demo_mode)
+    if args.demo_mode:
+        demo_loop()
+    else:
+        main_loop()
+    
     
