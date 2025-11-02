@@ -12,9 +12,9 @@ import argparse
 
 
 parser = argparse.ArgumentParser("Ammerman Sad Bot OpenAI Communicator")
-parser.add_argument("--OSC", type=bool, default=False, help="Enable OSC communication", dest="osc_enabled")
-parser.add_argument("--demo", type=bool, default=False, help="Enable demo mode", dest="demo_mode")
-parser.add_argument("--STE", type=bool, default=False, help="Speak Text", dest="speak_text_enabled")
+parser.add_argument("--OSC", action='store_true', default=False, help="Enable OSC communication", dest="osc_enabled")
+parser.add_argument("--demo", action='store_true', default=False, help="Enable demo mode", dest="demo_mode")
+parser.add_argument("--STE", action='store_true', default=False, help="Speak Text", dest="speak_text_enabled")
 args = parser.parse_args()
 print(args)
 
